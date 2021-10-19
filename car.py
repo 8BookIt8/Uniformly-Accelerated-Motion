@@ -1,13 +1,12 @@
-from os import access
 import pygame
 
 class Car(): 
-    def __init__(self, accel, velocity): 
+    def __init__(self, accel, velocity, color): 
         self.width = 120
         self.height = 80
         self.x = 0 - self.width
         self.y = 500 - self.height - 2
-        self.color = (0, 147, 0)
+        self.color = color
 
         self.accel = accel
         self.velocity = velocity
@@ -20,14 +19,24 @@ class Car():
         Args: 
             screen (float): 자동차가 그려질 스크린
         ''' 
-        pygame.draw.rect(screen, self.color, [self.x, self.y, self.width, self.height])
+        pygame.draw.rect(screen, self.color, [self.x, self.y, self.width, self.height], 1)
 
     def move(self): 
+        '''
+        자동차 이동
+        ''' 
         time = 0.01
         dist = self.velocity * time
         self.addDisplacement(dist)
         self.x += dist
         new_velocity = self.velocity + (self.accel * time)
+        self.velocity = new_velocity if new_velocity > 0 else 0
+
+    def moveFormula(self, velocity, time): 
+        new_displacement = (velocity * time) + ((self.accel * (time ** 2)) / 2)
+        self.displacement = new_displacement if new_displacement > self.displacement else self.displacement
+        self.x = 0 - self.width + self.displacement
+        new_velocity = velocity + (self.accel * time)
         self.velocity = new_velocity if new_velocity > 0 else 0
 
     def setAccel(self, accel):
